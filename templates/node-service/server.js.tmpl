@@ -1,0 +1,33 @@
+const express = require('express');
+const app = express();
+
+const SERVICE_NAME = process.env.SERVICE_NAME || '{{.ServiceName}}';
+const PORT = process.env.PORT || {{.Port}};
+const OWNER = '{{.Owner}}';
+
+app.use(express.json());
+
+app.get('/healthz', (req, res) => {
+  res.json({
+    status: 'healthy',
+    service: SERVICE_NAME,
+    timestamp: new Date().toISOString(),
+    version: '1.0.0'
+  });
+});
+
+app.get('/ready', (req, res) => {
+  res.json({ ready: true });
+});
+
+app.get('/', (req, res) => {
+  res.json({
+    message: `Welcome to ${SERVICE_NAME} - GitOps-managed microservice!`,
+    owner: OWNER,
+    env: process.env.APP_ENV || 'development'
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`[${SERVICE_NAME}] Server running on port ${PORT}...`);
+});

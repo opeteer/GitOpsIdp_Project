@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: idp-{{.Env}}
+
+resources:
+  - ../../base
+
+namePrefix: {{.Env}}-
+
+patches:
+  - target:
+      kind: Deployment
+      name: {{.ServiceName}}
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: {{.Replicas}}
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: {{.Image}}
+
+configMapGenerator:
+  - name: {{.ServiceName}}-config
+    behavior: merge
+    literals:
+      - APP_ENV={{.Env}}
+      - LOG_LEVEL={{.LogLevel}}

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitOpsIdp | Internal Developer Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2226%22>⚡</text></svg>">
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header class="header">
+    <div class="logo-group">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">
+        <h1>GitOpsIdp</h1>
+        <span>Internal Developer Platform &amp; GitOps Engine</span>
+      </div>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="tab-btn active" id="tab-catalog">
+        <span>📋</span> Service Catalog
+      </button>
+      <button class="tab-btn" id="tab-scaffold">
+        <span>🚀</span> Golden Path Wizard
+      </button>
+      <button class="tab-btn" id="tab-gitops">
+        <span>🔄</span> GitOps &amp; ArgoCD
+      </button>
+      <button class="tab-btn" id="tab-envs">
+        <span>🌐</span> Environments
+      </button>
+    </nav>
+
+    <div class="header-status">
+      <span id="header-commit" style="font-family: monospace; color: var(--text-muted);">Git HEAD: checking...</span>
+      <span class="status-badge status-synced" id="cluster-status-badge">● ArgoCD Connected</span>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="container">
+
+    <!-- View 1: Service Catalog -->
+    <section class="view-section active" id="view-catalog">
+      <div class="view-header">
+        <div>
+          <h2>Service Catalog</h2>
+          <p>Discover production microservices, owners, and GitOps deployments.</p>
+        </div>
+      </div>
+      <div class="grid-cards" id="catalog-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- View 2: Golden Path Scaffolder -->
+    <section class="view-section" id="view-scaffold">
+      <div class="view-header">
+        <div>
+          <h2>Golden Path Scaffolding Wizard</h2>
+          <p>Self-service microservice generation with automatic GitOps manifests and Git commit.</p>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <form id="scaffold-form">
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="svc-name">Service Name *</label>
+              <input type="text" id="svc-name" placeholder="e.g. auth-service, order-api" required pattern="[a-z0-9\-]+" title="Lowercase letters, numbers, and hyphens only">
+            </div>
+
+            <div class="form-group">
+              <label for="svc-lang">Golden Path Template *</label>
+              <select id="svc-lang">
+                <option value="go">Go Microservice (Go 1.24 HTTP Server)</option>
+                <option value="node">Node.js Service (Express + Node 20 LTS)</option>
+                <option value="python">Python Service (FastAPI + Python 3.12)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label for="svc-owner">Team / Owner *</label>
+              <input type="text" id="svc-owner" placeholder="e.g. Identity Team, Backend Squad" required>
+            </div>
+
+            <div class="form-group">
+              <label for="svc-port">HTTP Port</label>
+              <input type="number" id="svc-port" value="8080" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="svc-desc">Service Description</label>
+            <textarea id="svc-desc" rows="2" placeholder="Brief explanation of what this service does..."></textarea>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label>CPU Request / Limit</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="svc-cpu-req" value="50m" placeholder="Request">
+                <input type="text" id="svc-cpu-limit" value="250m" placeholder="Limit">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Memory Request / Limit</label>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="svc-mem-req" value="64Mi" placeholder="Request">
+                <input type="text" id="svc-mem-limit" value="256Mi" placeholder="Limit">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem;">
+            <input type="checkbox" id="svc-autocommit" checked style="width: auto;">
+            <label for="svc-autocommit" style="margin-bottom: 0; cursor: pointer;">
+              Auto-commit changes &amp; GitOps overlays to Git repository
+            </label>
+          </div>
+
+          <div style="margin-top: 1.5rem; text-align: right;">
+            <button type="submit" class="btn" id="scaffold-submit-btn">
+              🚀 Scaffold &amp; Push to GitOps
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- View 3: GitOps & ArgoCD Monitor -->
+    <section class="view-section" id="view-gitops">
+      <div class="view-header">
+        <div>
+          <h2>GitOps &amp; ArgoCD Reconciler</h2>
+          <p>Real-time reconciliation status, target revisions, and drift detection.</p>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Application</th>
+              <th>Environment</th>
+              <th>Sync Status</th>
+              <th>Health</th>
+              <th>Revision (SHA)</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="gitops-table-body">
+            <!-- Rendered by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- View 4: Environments Topology -->
+    <section class="view-section" id="view-envs">
+      <div class="view-header">
+        <div>
+          <h2>Environments &amp; Topology</h2>
+          <p>Promotion pipeline status across Dev, Staging, and Production clusters.</p>
+        </div>
+      </div>
+
+      <div id="env-topology">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <div id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

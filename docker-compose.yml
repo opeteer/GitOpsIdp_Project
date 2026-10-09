@@ -1,0 +1,25 @@
+services:
+  idp-api:
+    build:
+      context: ./idp-api
+      dockerfile: Dockerfile
+    container_name: gitops-idp-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/workspace
+    environment:
+      - PORT=8080
+      - PROJECT_ROOT=/workspace
+    restart: unless-stopped
+
+  idp-portal:
+    build:
+      context: ./idp-portal
+      dockerfile: Dockerfile
+    container_name: gitops-idp-portal
+    ports:
+      - "3000:80"
+    depends_on:
+      - idp-api
+    restart: unless-stopped

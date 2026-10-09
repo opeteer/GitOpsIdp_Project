@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.ServiceName}}-config
+data:
+  APP_ENV: "{{.Env}}"
+  LOG_LEVEL: "{{.LogLevel}}"
+  PORT: "{{.Port}}"
+  SERVICE_NAME: "{{.ServiceName}}"

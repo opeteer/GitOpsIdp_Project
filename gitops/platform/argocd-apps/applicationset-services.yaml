@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: gitops-idp-services
+  namespace: argocd
+spec:
+  generators:
+    - matrix:
+        generators:
+          - git:
+              repoURL: https://github.com/opeteer/GitOpsIdp_Project.git
+              revision: HEAD
+              directories:
+                - path: gitops/apps/*
+          - list:
+              elements:
+                - env: dev
+                  cluster: in-cluster
+                  server: https://kubernetes.default.svc
+                - env: staging
+                  cluster: in-cluster
+                  server: https://kubernetes.default.svc
+                - env: prod
+                  cluster: in-cluster
+                  server: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: '{{path.basename}}-{{env}}'
+      labels:
+        app.kubernetes.io/managed-by: gitops-idp
+        idp.gitops.io/service: '{{path.basename}}'
+        idp.gitops.io/env: '{{env}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/opeteer/GitOpsIdp_Project.git
+        targetRevision: HEAD
+        path: '{{path}}/overlays/{{env}}'
+      destination:
+        server: '{{server}}'
+        namespace: 'idp-{{env}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

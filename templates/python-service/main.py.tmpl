@@ -1,0 +1,34 @@
+import os
+from datetime import datetime, timezone
+from fastapi import FastAPI
+
+app = FastAPI(title="{{.ServiceName}}")
+
+SERVICE_NAME = os.getenv("SERVICE_NAME", "{{.ServiceName}}")
+PORT = int(os.getenv("PORT", "{{.Port}}"))
+OWNER = "{{.Owner}}"
+
+@app.get("/healthz")
+def healthz():
+    return {
+        "status": "healthy",
+        "service": SERVICE_NAME,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "version": "1.0.0"
+    }
+
+@app.get("/ready")
+def ready():
+    return {"ready": True}
+
+@app.get("/")
+def root():
+    return {
+        "message": f"Welcome to {SERVICE_NAME} - GitOps-managed microservice!",
+        "owner": OWNER,
+        "env": os.getenv("APP_ENV", "development")
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=PORT, log_level="info")

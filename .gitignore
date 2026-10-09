@@ -1,0 +1,26 @@
+# Binaries & build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+idp-api-bin
+idp-api/idp-api-bin
+
+# Test binaries
+*.test
+
+# Go workspace
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+# Node / Frontend
+node_modules/
+dist/
+.DS_Store
+
+# Logs
+*.log
